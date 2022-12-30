@@ -1,0 +1,12 @@
+version: '2'
+services:
+    LIF:
+        image: 988994707677.dkr.ecr.us-east-1.amazonaws.com/databi-gaincredit/lif:test  # Give docker-image of middleware
+        environment:
+          - PROJECT_PATH=/lif/
+          - LOG_PATH=/logs/
+      #restart: always
+        volumes:
+            - ./preprod_config:/lif/config
+            - /data/logs/:/logs
+        command: sleep infinity

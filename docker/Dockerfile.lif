@@ -1,0 +1,15 @@
+FROM python:3.10.5-slim as base
+WORKDIR /lif
+COPY ./Lake_Ingestion_Codes/docker/requirements.txt /lif/
+RUN apt-get update \ 
+    && apt-get install build-essential make gcc -y \
+    && apt-get install dpkg-dev -y \ 
+    && apt-get install libjpeg-dev -y \ 
+    && apt-get install default-libmysqlclient-dev -y \
+    && pip install -r requirements.txt \
+    && apt-get remove -y --purge make gcc build-essential \
+    && apt-get auto-remove -y \
+    && rm -rf /var/lib/apt/lists/* \
+    && find /usr/local/lib -name "*.pyc" -type f -delete
+
+COPY ./Lake_Ingestion_Codes /lif

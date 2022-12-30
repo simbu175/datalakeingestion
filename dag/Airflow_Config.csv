@@ -1,0 +1,26 @@
+DAG Name,Operator,Task Name,Script Name,Task Order,DAG order,DAG Dependent
+dag_extract_fact,Python,stg_interest_accrual_drafty,extract.py,1,1,
+dag_extract_fact,Python,stg_interest_accrual_ls,extract.py,1,1,
+dag_extract_fact,Python,stg_fact_loan_transaction_drafty,extract.py,2,1,
+dag_extract_fact,Python,stg_fact_loan_transaction_ls,extract.py,2,1,
+dag_extract_fact,Python,stg_payment_calendar_drafty,extract.py,1,1,
+dag_extract_fact,Python,stg_payment_calendar_ls,extract.py,1,1,
+dag_extract_dim,Python,stg_dca_collection_drafty,extract.py,1,2,dag_extract_fact
+dag_extract_dim,Python,stg_dca_collection_ls,extract.py,1,2,dag_extract_fact
+dag_extract_dim,Python,stg_portfolio_drafty,extract.py,1,2,dag_extract_fact
+dag_extract_dim,Python,stg_loan_portfolio_drafty,extract.py,1,2,dag_extract_fact
+dag_extract_dim,Python,stg_portfolio_ls,extract.py,1,2,dag_extract_fact
+dag_extract_dim,Python,stg_loan_portfolio_ls,extract.py,1,2,dag_extract_fact
+dag_extract_dim,Python,stg_riskprofile_detail_ls,extract.py,1,2,dag_extract_fact
+dag_extract_dim,Python,stg_loan_states_log_drafty,extract.py,1,2,dag_extract_fact
+dag_extract_dim,Python,stg_loan_states_log_ls,extract.py,1,2,dag_extract_fact
+dag_extract_dim,Python,stg_pg_transactions_drafty,extract.py,1,2,dag_extract_fact
+dag_extract_dim,Python,stg_pg_transactions_ls,extract.py,1,2,dag_extract_fact
+dag_extract_dim_base,Python,stg_loan_drafty,extract.py,1,3,dag_extract_dim
+dag_extract_dim_base,Python,stg_loan_ls,extract.py,1,3,dag_extract_dim
+dag_extract_dim_base,Python,stg_application_product_drafty,extract.py,2,3,dag_extract_dim
+dag_extract_dim_base,Python,stg_application_product_ls,extract.py,2,3,dag_extract_dim
+dag_extract_dim_base,Python,stg_application_ls,extract.py,3,3,dag_extract_dim
+dag_extract_dim_base,Python,stg_application_drafty,extract.py,3,3,dag_extract_dim
+dag_extract_dim_base,Python,stg_riskprofile_detail_drafty,extract.py,4,3,dag_extract_dim
+dag_lendingstream,docker,dag_lendingstream,start_ingestion.py,1,1,
