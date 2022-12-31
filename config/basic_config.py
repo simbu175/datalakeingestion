@@ -45,6 +45,32 @@ s3_partition_file = f"s3://{s3_partition_bucket}/{s3_partition_config_key}"
 s3_athena_query_results_bucket = f"databi-testing"
 s3_athena_query_results_key = f"LakeIngestion/api-athena-query-results"
 
+# update config values
+db_host = f'10.6.0.36'  # nrtdbgeo  f'10.210.12.4'  # tugelav2
+dl_target = f's3://{s3_config_bucket}/Tugela/datalake_data'
+source_dbs = (f'lendingstream', f'drafty')
+full_tables = (f'lendingstream.loan', f'drafty.loan')
+partition_by_yyyy = (f'lendingstream.transactions', f'lendingstream.ledger',)
+partition_by_yyyymm = (f'lendingstream.application', f'lendingstream.decision_info',)
+partition_by_yyyymmdd = (f'lendingstream.multitier_lead_info',
+                         f'drafty.multitier_lead_info',
+                         f'lendingstream.ruleservice_response',
+                         f'lendingstream.riskprofile_eligibility_history',
+                         f'lendingstream.application_history',
+                         f'lendingstream.application_abtf_variants',
+                         f'drafty.application_profile_update',
+                         f'lendingstream.request_tracker',
+                         f'lendingstream.application_state_history',)
+
+control_config_columns = [f'lake_ingestion_id', f'ingestion_type', f'servername',
+                          f'databasename', f'tablename', f'delta_field',
+                          f'delta_field_expr', f'date_not_available',
+                          f'active_indicator', f'invalidated_by',
+                          f'crawler_name', f'glue_db_name', f'target_type',
+                          f'target_location', f'primary_key', f'athena_view_db',
+                          f'athena_view_name', f'view_needed', f'partition_config',
+                          f'airflow_dag_group', f'update_datetime']
+
 execution_log_format = {f'lake_ingestion_id': None, f'execution_status': None,
                         f'start_value': None, f'end_value': None,
                         f'source_count': None, f'target_count': None,

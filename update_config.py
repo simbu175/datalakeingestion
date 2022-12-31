@@ -14,32 +14,6 @@ from start_ingestion import read_control_partition_config
 update_config_logger = basiclogger(logname=f"UpdateConfig_default")
 update_config_except_logger = basiclogger(logname=f"UpdateConfig_exceptions", section=f"EXCEPTION")
 
-db_host = f'10.6.0.36'  # nrtdbgeo  f'10.210.12.4'  # tugelav2
-dl_target = f's3://databi-testing/Tugela/datalake_data'
-source_dbs = (f'lendingstream', f'drafty')
-full_tables = (f'lendingstream.loan', f'drafty.loan')
-
-partition_by_yyyy = (f'lendingstream.transactions', f'lendingstream.ledger',)
-partition_by_yyyymm = (f'lendingstream.application', f'lendingstream.decision_info',)
-partition_by_yyyymmdd = (f'lendingstream.multitier_lead_info',
-                         f'drafty.multitier_lead_info',
-                         f'lendingstream.ruleservice_response',
-                         f'lendingstream.riskprofile_eligibility_history',
-                         f'lendingstream.application_history',
-                         f'lendingstream.application_abtf_variants',
-                         f'drafty.application_profile_update',
-                         f'lendingstream.request_tracker',
-                         f'lendingstream.application_state_history',)
-
-control_config_columns = [f'lake_ingestion_id', f'ingestion_type', f'servername',
-                          f'databasename', f'tablename', f'delta_field',
-                          f'delta_field_expr', f'date_not_available',
-                          f'active_indicator', f'invalidated_by',
-                          f'crawler_name', f'glue_db_name', f'target_type',
-                          f'target_location', f'primary_key', f'athena_view_db',
-                          f'athena_view_name', f'view_needed', f'partition_config',
-                          f'airflow_dag_group', f'update_datetime']
-
 config = configparser.ConfigParser()
 config.read(con.DB_CONFIG)
 
@@ -119,7 +93,8 @@ class ConfigData:
             return False
 
     def calc_max_ingestion_id(self):
-        max_id = self.control_file[f'lake_ingestion_id'].max()
+        # handling empty config as part of first time update
+        max_id = 0 if self.control_file.empty else self.control_file[f'lake_ingestion_id'].max()
         ConfigData.max_ingestion_id = ConfigData.max_ingestion_id + 1
         max_ingest = ConfigData.max_ingestion_id + max_id
         return max_ingest
@@ -182,11 +157,11 @@ class ConfigData:
         # id > 1000001 and id <= 2000000 --> 2M and so on..
 
         # chk_name = f'{self.dbname}.{tbl}'
-        # if chk_name in partition_by_yyyy:
+        # if chk_name in con.partition_by_yyyy:
         #     part_format = f'YYYY'
-        # elif chk_name in partition_by_yyyymm:
+        # elif chk_name in con.partition_by_yyyymm:
         #     part_format = f'YYYYMM'
-        # elif chk_name in partition_by_yyyymmdd:
+        # elif chk_name in con.partition_by_yyyymmdd:
         #     part_format = f'YYYYMMDD'
         # else:
         #     part_format = f'XXXX'  # we will not consider this
@@ -223,22 +198,22 @@ class ConfigData:
 
     def check_view_needed(self, tbl):
         chk_view = f'{self.dbname}.{tbl}'
-        if chk_view in partition_by_yyyy \
-                or chk_view in partition_by_yyyymm \
-                or chk_view in partition_by_yyyymmdd:
+        if chk_view in con.partition_by_yyyy \
+                or chk_view in con.partition_by_yyyymm \
+                or chk_view in con.partition_by_yyyymmdd:
             return 0
         else:
             return 1
 
     def update_config_per_table(self, t_name):
         row_dict = {}
-        for k in control_config_columns:
+        for k in con.control_config_columns:
             if k == f'lake_ingestion_id':
                 row_dict[k] = self.calc_max_ingestion_id()
             elif k == f'ingestion_type':
                 row_dict[k] = f'mysql-table'
             elif k == f'servername':
-                row_dict[k] = db_host
+                row_dict[k] = con.db_host
             elif k == f'databasename':
                 row_dict[k] = self.dbname
             elif k == f'tablename':
@@ -260,7 +235,7 @@ class ConfigData:
             elif k == f'target_type':
                 row_dict[k] = f's3'
             elif k == f'target_location':
-                row_dict[k] = dl_target
+                row_dict[k] = con.dl_target
             elif k == f'primary_key':
                 row_dict[k] = self.check_update_primary_keys(t_name)
             elif k == f'athena_view_db':
@@ -297,7 +272,7 @@ if __name__ == f"__main__":
     try:
 
         #  dbname param is mandatory; whereas tablename param is optional
-        input_dbs = sys.argv[1].split(',') if len(sys.argv) > 1 else source_dbs
+        input_dbs = sys.argv[1].split(',') if len(sys.argv) > 1 else con.source_dbs
         input_tables = sys.argv[2].split(',') if len(sys.argv) > 2 else None
 
         update_config_logger.info(f"Fetch the current control config from s3")
