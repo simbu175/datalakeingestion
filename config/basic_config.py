@@ -26,7 +26,8 @@ s3_service_name = f"s3"
 glue_service_name = f"glue"
 athena_service_name = f"athena"
 
-aws_config_section = f"default_preprod"  # f"default_{os.environ['Mode']}"
+# expects Mode environment variable to be created prior usage
+aws_config_section = f"default_{os.environ['Mode']}"
 s3_execution_log_bucket_name = f"databi-testing"
 s3_execution_log_bucket_key_prefix = f"LakeIngestion/execution_logs"
 s3_execution_log_file_type = f"csv"
@@ -62,5 +63,5 @@ bing_mailsender = f"adctr@microsoft.com"
 bing_subject = f"Your scheduled report is ready to view"
 bing_mailfolder = f"Inbox"
 attachment_path = os.path.join(LOG_PATH, "PPC_Files/")
-file_ppc_webmail_url = f"webmail.lendingstream.co.uk"
+file_ppc_webmail_url = f""
 file_ppc_webmail_port = 993
