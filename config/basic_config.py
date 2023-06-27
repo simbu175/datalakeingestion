@@ -56,8 +56,8 @@ execution_log_header_list = [f'lake_ingestion_id', f'execution_status',
                              f'reason_code', f'insert_datetime']
 
 """ Files ingestion - BingAds/GoogleAds/DiscoveryAds """
-zmailid = f"datateam@lendingstream.co.uk"
-zmailpassword = f"s/'mK~@t4+"
+zmailid = f""
+zmailpassword = f""
 bing_mailsender = f"adctr@microsoft.com"
 bing_subject = f"Your scheduled report is ready to view"
 bing_mailfolder = f"Inbox"
